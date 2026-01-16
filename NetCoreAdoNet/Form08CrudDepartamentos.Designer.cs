@@ -114,6 +114,7 @@
             btnInsertar.TabIndex = 8;
             btnInsertar.Text = "Insertar";
             btnInsertar.UseVisualStyleBackColor = true;
+            btnInsertar.Click += btnInsertar_Click;
             // 
             // btnEliminar
             // 
@@ -133,6 +134,7 @@
             btnModificar.TabIndex = 10;
             btnModificar.Text = "Modificar";
             btnModificar.UseVisualStyleBackColor = true;
+            btnModificar.Click += btnModificar_Click;
             // 
             // Form08CrudDepartamentos
             // 
