@@ -1,4 +1,5 @@
-﻿using NetCoreAdoNet.Respositories;
+﻿using NetCoreAdoNet.Models;
+using NetCoreAdoNet.Respositories;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -32,18 +33,32 @@ namespace NetCoreAdoNet
 
         private async void btnIncremento_Click(object sender, EventArgs e)
         {
+            string oficio = this.lstOficios.SelectedItem.ToString();
             int incremento = int.Parse(this.txtIncremento.Text);
             int registros = await this.repo.UpdateSalarioEmpleadosAsync(this.lstOficios.SelectedItem.ToString(), incremento);
             MessageBox.Show("Registros cambiados: " + registros);
+            DatosEmpleado data = await this.repo.GetDatosEmpleadoAsync(oficio);
+            this.lblMaximoSalarial.Text = data.MaximoSalarial.ToString();
+            this.lblMediaSalarial.Text = data.MediaSalarial.ToString();
+            this.lblSumaSalarial.Text = data.SumaSalarial.ToString();
         }
 
         private async void lstOficios_SelectedIndexChanged(object sender, EventArgs e)
         {
-            List<string> empleados = await this.repo.GetEmpleadosByOficioAsync(this.lstOficios.SelectedItem.ToString());
-            this.lstEmpleados.Items.Clear();
-            foreach(string empleado in empleados)
+            int index = this.lstOficios.SelectedIndex;
+            if (index != -1)
             {
-                this.lstEmpleados.Items.Add(empleado);
+                string oficio = this.lstOficios.SelectedItem.ToString();
+                List<string> empleados = await this.repo.GetEmpleadosByOficioAsync(this.lstOficios.SelectedItem.ToString());
+                this.lstEmpleados.Items.Clear();
+                foreach (string empleado in empleados)
+                {
+                    this.lstEmpleados.Items.Add(empleado);
+                }
+                DatosEmpleado data = await this.repo.GetDatosEmpleadoAsync(oficio);
+                this.lblMaximoSalarial.Text = data.MaximoSalarial.ToString();
+                this.lblMediaSalarial.Text = data.MediaSalarial.ToString();
+                this.lblSumaSalarial.Text = data.SumaSalarial.ToString();
             }
         }
     }

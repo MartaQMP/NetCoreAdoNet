@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using NetCoreAdoNet.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -84,7 +85,24 @@ namespace NetCoreAdoNet.Respositories
             this.reader = await this.com.ExecuteReaderAsync();
             return suma;
         }
+
+        public async Task<DatosEmpleado> GetDatosEmpleadoAsync(string oficio)
+        {
+            string sql = "SELECT SUM(SALARIO) AS SUMASALARIAL, AVG(SALARIO) AS MEDIA, MAX(SALARIO) AS MAXIMOSALARIO FROM EMP WHERE OFICIO=@oficio";
+            this.com.Parameters.AddWithValue(@"oficio", oficio);
+            this.com.CommandType = CommandType.Text;
+            this.com.CommandText = sql;
+            await this.cn.OpenAsync();
+            this.reader = await this.com.ExecuteReaderAsync();
+            DatosEmpleado data = new DatosEmpleado();
+            await this.reader.ReadAsync();
+            data.SumaSalarial = int.Parse(this.reader["SUMASALARIAL"].ToString());
+            data.MediaSalarial = int.Parse(this.reader["MEDIA"].ToString());
+            data.MaximoSalarial = int.Parse(this.reader["MAXIMOSALARIO"].ToString());
+            await this.reader.CloseAsync();
+            await this.cn.CloseAsync();
+            this.com.Parameters.Clear();
+            return data;
+        }
     }
-
-
 }
